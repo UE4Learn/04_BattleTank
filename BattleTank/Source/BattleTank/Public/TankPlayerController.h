@@ -24,4 +24,8 @@ public:
 
 	// Aim tank barrel to crosshair projection vector
 	void AimTowardsCrosshair();
+
+private:
+	// Get the location in world space of crosshair reticle
+	bool GetSightRayHitLocation(FVector& OutHitLocation) const;
 };
