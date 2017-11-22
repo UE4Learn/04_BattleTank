@@ -1,9 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "TankAIController.h"
-#include "GameFramework/Actor.h"
-#include "TankAIController.h"
-
+#include "Engine/World.h"
+#include "Public/TankAIController.h"
 
 void ATankAIController::BeginPlay()
 {
@@ -22,11 +20,10 @@ void ATankAIController::BeginPlay()
 
 ATank* ATankAIController::GetPlayerTank() const
 {
-	auto PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	if (PlayerPawn)
 	{
 		return Cast<ATank>(PlayerPawn);
 	}
 	return nullptr;
 }
-
