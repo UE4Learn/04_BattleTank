@@ -20,12 +20,19 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+private:
+
 	ATank* GetControlledTank() const;
 
 	// Aim tank barrel to crosshair projection vector
 	void AimTowardsCrosshair();
 
-private:
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	float CrossHairXLocation = .5f;
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	float CrossHairYLocation = .45f;
+
 	// Get the location in world space of crosshair reticle
 	bool GetSightRayHitLocation(FVector& OutHitLocation) const;
 };
