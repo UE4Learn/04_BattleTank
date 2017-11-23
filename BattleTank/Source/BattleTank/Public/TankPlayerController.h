@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Tank.h"
-#include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
 
 /**
@@ -33,6 +32,14 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	float CrossHairYLocation = .45f;
 
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	float LineTraceRange = 1000000.f;
+
 	// Get the location in world space of crosshair reticle
 	bool GetSightRayHitLocation(FVector& OutHitLocation) const;
+
+	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection, FVector& CameraWorldLocation) const;
+
+	// trace for visibility to get target to shoot
+	bool GetLookVectorHitLocation(FVector CameraWorldLocation, FVector LookDirection, FVector& HitLocation) const;
 };

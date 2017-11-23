@@ -34,25 +34,58 @@ void ATankPlayerController::AimTowardsCrosshair()
 {
 	if (!GetControlledTank()) { return; }
 
-	FVector OutHitLocation; // OUT parameter
-	if (GetSightRayHitLocation(OutHitLocation))
-	{
-		// UE_LOG(LogTemp, Warning, TEXT("Look Direction: %s"), *OutHitLocation.ToString());
+	FVector HitLocation; // OUT parameter
 
-		// If it hits the landscape
-		// Tell controlled tank to aim at this point
+	if (GetSightRayHitLocation(HitLocation))
+	{
+		GetControlledTank()->AimAt(HitLocation);
 	}
 }
 
+bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection, FVector& CameraWorldLocation) const
+{
+	//"de-project" the screen position of crosshair to a world direction
+	return DeprojectScreenPositionToWorld(
+		ScreenLocation.X,
+		ScreenLocation.Y,
+		CameraWorldLocation,
+		LookDirection);
+}
+
 // Get world location of linetrace through crosshair, true if hits landscape
-bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) const
+bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 {
 	// find crosshair position in pixel coordinates
 	int32 viewportSizeX, viewportSizeY;
 	GetViewportSize(viewportSizeX, viewportSizeY);
 	auto ScreenLocation = FVector2D(viewportSizeX * CrossHairXLocation, viewportSizeY * CrossHairYLocation);
 
-	//"de-project" the screen position of crosshair to a world direction
-	// line trace that look direction to a max range
+	FVector LookDirection;
+	FVector CameraWorldLocation;
+
+	if (GetLookDirection(ScreenLocation, LookDirection, CameraWorldLocation))
+	{
+		// line trace that look direction to a max range
+		GetLookVectorHitLocation(CameraWorldLocation, LookDirection, HitLocation);
+	}
+
 	return true;
+}
+
+bool ATankPlayerController::GetLookVectorHitLocation(FVector CameraWorldLocation, FVector LookDirection, FVector& HitLocation) const
+{
+	FHitResult HitResult;
+	auto EndLocation = CameraWorldLocation + (LookDirection * LineTraceRange);
+
+	if (GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			CameraWorldLocation,
+			EndLocation,
+			ECC_Visibility
+	))
+	{
+		HitLocation = HitResult.Location;
+		return true;
+	}
+	return false;
 }
