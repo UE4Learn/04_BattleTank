@@ -23,13 +23,15 @@ void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	ATank* PlayerTankRef = nullptr;
-
-	if (!PlayerTankRef)
+	if (GetPlayerTank())
 	{
-		PlayerTankRef = GetPlayerTank();
+		// TODO move towards player
+
+		// Aim towards player
+		GetPlayerTank()->AimAt(GetPlayerTank()->GetActorLocation());
+
+		// Fire when ready
 	}
-	PlayerTankRef->AimAt(PlayerTankRef->GetActorLocation());
 }
 
 ATank* ATankAIController::GetPlayerTank() const
