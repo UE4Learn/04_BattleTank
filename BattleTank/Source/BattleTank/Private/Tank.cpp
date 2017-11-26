@@ -46,13 +46,23 @@ void ATank::AimAt(FVector HitLocation)
 
 void ATank::Fire()
 {
-	if (!Barrel) { return; }
+	if (!ProjectileBlueprint)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Fire failed: No projectile assigned to tank blueprint defaults."));
+		return;
+	}
 
-	// Spawn projectile at the end of the barrel
-	auto ProjectileSocketLocation = Barrel->GetSocketLocation(FName("Projectile"));
-	auto ProjectileSocketRotation = Barrel->GetSocketRotation(FName("Projectile"));
+		bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
+		if (Barrel && isReloaded)
+		{
 
-	auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, ProjectileSocketLocation, ProjectileSocketRotation);
+			// Spawn projectile at the end of the barrel
+			auto ProjectileSocketLocation = Barrel->GetSocketLocation(FName("Projectile"));
+			auto ProjectileSocketRotation = Barrel->GetSocketRotation(FName("Projectile"));
 
-	Projectile->LaunchProjectile(LaunchSpeed);
+			auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, ProjectileSocketLocation, ProjectileSocketRotation);
+
+			Projectile->LaunchProjectile(LaunchSpeed);
+			LastFireTime = FPlatformTime::Seconds();
+		}
 }

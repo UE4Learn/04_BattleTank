@@ -25,13 +25,13 @@ private:
 	// Aim tank barrel to crosshair projection vector
 	void AimTowardsCrosshair();
 
-	UPROPERTY(EditAnywhere, Category = "Widgets")
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	float CrossHairXLocation = .5f;
 
-	UPROPERTY(EditAnywhere, Category = "Widgets")
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	float CrossHairYLocation = .45f;
 
-	UPROPERTY(EditAnywhere, Category = "Widgets")
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	float LineTraceRange = 1000000.f;
 
 	// Get the location in world space of crosshair reticle
