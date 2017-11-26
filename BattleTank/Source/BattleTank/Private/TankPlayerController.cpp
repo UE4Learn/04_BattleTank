@@ -2,6 +2,7 @@
 
 #include "Public/TankPlayerController.h"
 #include "Blueprint/UserWidget.h"
+#include "Tank.h"
 
 void ATankPlayerController::BeginPlay()
 {
