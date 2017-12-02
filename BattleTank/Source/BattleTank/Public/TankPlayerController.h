@@ -20,6 +20,7 @@ public:
 
 private:
 
+	UFUNCTION(BlueprintCallable, Category = "Setup")
 	ATank* GetControlledTank() const;
 
 	// Aim tank barrel to crosshair projection vector
