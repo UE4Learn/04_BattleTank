@@ -2,20 +2,20 @@
 
 #include "Public/TankPlayerController.h"
 #include "Blueprint/UserWidget.h"
+#include "TankAimingComponent.h"
 #include "Tank.h"
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto ControlledTank = GetControlledTank();
-	if (!ControlledTank)
+	UTankAimingComponent* AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
+	if (ensure(AimingComponent))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerController not possessing a tank"));
+		FoundAimingComponent(AimingComponent);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerController possessing %s"), *(ControlledTank->GetName()));
+		UE_LOG(LogTemp, Warning, TEXT("Player controller can't find aiming component at Begin Play."))
 	}
 }
 
@@ -33,7 +33,7 @@ ATank* ATankPlayerController::GetControlledTank() const
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!GetControlledTank()) { return; }
+	if (!ensure(GetControlledTank())) { return; }
 
 	FVector HitLocation; // OUT parameter
 
@@ -64,7 +64,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	FVector LookDirection;
 	FVector CameraWorldLocation;
 
-	if (GetLookDirection(ScreenLocation, LookDirection, CameraWorldLocation))
+	if (ensure(GetLookDirection(ScreenLocation, LookDirection, CameraWorldLocation)))
 	{
 		// line trace that look direction to a max range
 		GetLookVectorHitLocation(CameraWorldLocation, LookDirection, HitLocation);
@@ -78,12 +78,12 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector CameraWorldLocation
 	FHitResult HitResult;
 	auto EndLocation = CameraWorldLocation + (LookDirection * LineTraceRange);
 
-	if (GetWorld()->LineTraceSingleByChannel(
+	if (ensure(GetWorld()->LineTraceSingleByChannel(
 			HitResult,
 			CameraWorldLocation,
 			EndLocation,
 			ECC_Visibility
-	))
+	)))
 	{
 		HitLocation = HitResult.Location;
 		return true;

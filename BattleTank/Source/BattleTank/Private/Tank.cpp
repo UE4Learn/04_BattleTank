@@ -14,22 +14,27 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
+void ATank::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 void ATank::AimAt(FVector HitLocation)
 {
-	if (!TankAimingComponent) { return; }
+	if (!ensure(TankAimingComponent)) { return; }
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 }
 
 void ATank::Fire()
 {
-	if (!ProjectileBlueprint)
+	if (!ensure(ProjectileBlueprint))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Fire failed: No projectile assigned to tank blueprint defaults."));
 		return;
 	}
-
+	if (!ensure(Barrel)) { return; }
 		bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-		if (Barrel && isReloaded)
+		if (isReloaded)
 		{
 
 			// Spawn projectile at the end of the barrel
