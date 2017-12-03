@@ -2,7 +2,6 @@
 
 #include "Public/Tank.h"
 #include "TankAimingComponent.h"
-#include "TankMovementComponent.h"
 #include "Engine/World.h"
 #include "TankBarrel.h"
 #include "Projectile.h"
@@ -17,6 +16,8 @@ ATank::ATank()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TankAimingComponent = FindComponentByClass<UTankAimingComponent>();
 }
 
 void ATank::AimAt(FVector HitLocation)
@@ -27,23 +28,19 @@ void ATank::AimAt(FVector HitLocation)
 
 void ATank::Fire()
 {
-	if (!ensure(ProjectileBlueprint))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Fire failed: No projectile assigned to tank blueprint defaults."));
-		return;
-	}
+	if (!ensure(ProjectileBlueprint)) { return; }
 	if (!ensure(Barrel)) { return; }
-		bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-		if (isReloaded)
-		{
+	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
+	if (isReloaded)
+	{
 
-			// Spawn projectile at the end of the barrel
-			auto ProjectileSocketLocation = Barrel->GetSocketLocation(FName("Projectile"));
-			auto ProjectileSocketRotation = Barrel->GetSocketRotation(FName("Projectile"));
+		// Spawn projectile at the end of the barrel
+		auto ProjectileSocketLocation = Barrel->GetSocketLocation(FName("Projectile"));
+		auto ProjectileSocketRotation = Barrel->GetSocketRotation(FName("Projectile"));
 
-			auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, ProjectileSocketLocation, ProjectileSocketRotation);
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, ProjectileSocketLocation, ProjectileSocketRotation);
 
-			Projectile->LaunchProjectile(LaunchSpeed);
-			LastFireTime = FPlatformTime::Seconds();
-		}
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+	}
 }
