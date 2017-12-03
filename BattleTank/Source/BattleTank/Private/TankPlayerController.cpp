@@ -1,9 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Public/TankPlayerController.h"
-#include "Blueprint/UserWidget.h"
 #include "TankAimingComponent.h"
-#include "Tank.h"
+#include "Engine/World.h"
 
 void ATankPlayerController::BeginPlay()
 {

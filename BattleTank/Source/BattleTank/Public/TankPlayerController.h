@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "TankPlayerController.generated.h"
 
+class UTankAimingComponent;
+
 UCLASS()
 class BATTLETANK_API ATankPlayerController : public APlayerController
 {
