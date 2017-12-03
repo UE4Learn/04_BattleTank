@@ -21,6 +21,7 @@ void ATankPlayerController::Tick(float DeltaTime)
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
+	if (!GetPawn()) { return; } // e.g. if not possessing
 	UTankAimingComponent* AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
 
@@ -48,7 +49,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	// find crosshair position in pixel coordinates
 	int32 viewportSizeX, viewportSizeY;
 	GetViewportSize(viewportSizeX, viewportSizeY);
-	auto ScreenLocation = FVector2D(viewportSizeX * CrossHairXLocation, viewportSizeY * CrossHairYLocation);
+	FVector2D ScreenLocation = FVector2D(viewportSizeX * CrossHairXLocation, viewportSizeY * CrossHairYLocation);
 
 	FVector LookDirection;
 	FVector CameraWorldLocation;
@@ -65,7 +66,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 bool ATankPlayerController::GetLookVectorHitLocation(FVector CameraWorldLocation, FVector LookDirection, FVector& HitLocation) const
 {
 	FHitResult HitResult;
-	auto EndLocation = CameraWorldLocation + (LookDirection * LineTraceRange);
+	FVector EndLocation = CameraWorldLocation + (LookDirection * LineTraceRange);
 
 	if (ensure(GetWorld()->LineTraceSingleByChannel(
 			HitResult,
