@@ -24,7 +24,6 @@ void ATankPlayerController::AimTowardsCrosshair()
 	if (!GetPawn()) { return; } // e.g. if not possessing
 	UTankAimingComponent* AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
-
 	FVector HitLocation; // OUT parameter
 
 	if (GetSightRayHitLocation(HitLocation))
@@ -54,13 +53,13 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	FVector LookDirection;
 	FVector CameraWorldLocation;
 
-	if (ensure(GetLookDirection(ScreenLocation, LookDirection, CameraWorldLocation)))
+	if (GetLookDirection(ScreenLocation, LookDirection, CameraWorldLocation))
 	{
 		// line trace that look direction to a max range
-		GetLookVectorHitLocation(CameraWorldLocation, LookDirection, HitLocation);
+		return GetLookVectorHitLocation(CameraWorldLocation, LookDirection, HitLocation);
 	}
 
-	return true;
+	return false;
 }
 
 bool ATankPlayerController::GetLookVectorHitLocation(FVector CameraWorldLocation, FVector LookDirection, FVector& HitLocation) const
@@ -68,12 +67,13 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector CameraWorldLocation
 	FHitResult HitResult;
 	FVector EndLocation = CameraWorldLocation + (LookDirection * LineTraceRange);
 
-	if (ensure(GetWorld()->LineTraceSingleByChannel(
-			HitResult,
-			CameraWorldLocation,
-			EndLocation,
-			ECC_Visibility
-	)))
+	if (GetWorld()->LineTraceSingleByChannel
+	(
+			HitResult
+		,	CameraWorldLocation
+		,	EndLocation
+		,	ECC_Visibility
+	))
 	{
 		HitLocation = HitResult.Location;
 		return true;
