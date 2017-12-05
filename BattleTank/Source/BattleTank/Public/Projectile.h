@@ -7,6 +7,8 @@
 #include "Projectile.generated.h"
 
 class UProjectileMovementComponent;
+class UParticleSystemComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class BATTLETANK_API AProjectile : public AActor
@@ -17,16 +19,19 @@ public:
 	// Sets default values for this actor's properties
 	AProjectile();
 
-protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void LaunchProjectile(float Speed);
+
+private:
+
 	UProjectileMovementComponent* ProjectileMovement = nullptr;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(VisibleAnywhere, Category = "Tank Projectile")
+	UStaticMeshComponent* CollisionMesh = nullptr;
 
-	void LaunchProjectile(float Speed);
+	UPROPERTY(VisibleAnywhere, Category = "Tank Projectile")
+	UParticleSystemComponent* LaunchBlast = nullptr;
 	
 };
